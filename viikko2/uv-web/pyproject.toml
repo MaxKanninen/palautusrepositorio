@@ -1,0 +1,21 @@
+[project]
+name = "uv-web"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "MaxKanninen", email = "kanninen.max@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi>=0.162.0",
+    "pytest>=9.2.0",
+    "sqlalchemy==1.4.54",
+]
+
+[project.scripts]
+uv-web = "uv_web:main"
+
+[build-system]
+requires = ["uv_build>=0.13.5,<0.14.0"]
+build-backend = "uv_build"
