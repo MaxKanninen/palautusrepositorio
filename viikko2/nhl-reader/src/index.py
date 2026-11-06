@@ -1,14 +1,44 @@
 import requests
+from rich.console import Console
+from rich.prompt import Prompt
+from rich.table import Table
 from player import Player
 
+SEASONS = [
+    "2018-19", "2019-20", "2020-21", "2021-22", "2022-23",
+    "2023-24", "2024-25", "2025-26", "2026-27",
+]
+
 def main():
-    url = "https://studies.cs.helsinki.fi/nhlstats/2024-25/players"
+    console = Console()
+    season = Prompt.ask("Season", choices=SEASONS, default="2024-25")
+    url = f"https://studies.cs.helsinki.fi/nhlstats/{season}/players"
     reader = PlayerReader(url)
     stats = PlayerStats(reader)
-    players = stats.top_scorers_by_nationality("FIN")
+
+    while True:
+        nationality = Prompt.ask("Nationality", choices=stats.nationalities(), default="")
+        if not nationality:
+            break
+
+        players = stats.top_scorers_by_nationality(nationality)
+        console.print(players_table(players, f"Season {season} players from {nationality}"))
+
+def players_table(players, title):
+    table = Table(title=title)
+    table.add_column("name", style="cyan")
+    table.add_column("teams", style="magenta")
+    table.add_column("goals", justify="right", style="green")
+    table.add_column("assists", justify="right", style="green")
+    table.add_column("points", justify="right", style="green")
 
     for player in players:
-        print(player)
+        table.add_row(
+            player.name, player.team,
+            str(player.goals), str(player.assists), str(player.points),
+        )
+
+    return table
 
 class PlayerReader():
     def __init__(self, url):
@@ -34,9 +64,12 @@ class PlayerStats:
             if player.nationality == nationality:
                top_nat_players.append(player)
 
-        top_nat_players.sort(key=lambda player: player.goals + player.assists, reverse=True)
-        
+        top_nat_players.sort(key=lambda player: player.points, reverse=True)
+
         return top_nat_players
+
+    def nationalities(self):
+        return sorted({player.nationality for player in self.players})
 
 if __name__ == "__main__":
     main()

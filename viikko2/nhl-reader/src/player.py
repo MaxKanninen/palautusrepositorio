@@ -6,7 +6,11 @@ class Player:
         self.goals = dict['goals']
         self.team = dict['team']
         self.games = dict['games']
-        self.id = dict['id']
-    
+        self.id = dict.get('id')
+
+    @property
+    def points(self):
+        return self.goals + self.assists
+
     def __str__(self):
         return self.name
