@@ -11,11 +11,13 @@ def main():
         player = Player(player_dict)
         players.append(player)
 
-    print("Suomalaiset pelaajat:")
+    players.sort(key=lambda player: player.goals + player.assists, reverse=True)
+
+    print("Players from Finland:")
 
     for player in players:
         if player.nationality == "FIN":
-            print(player)
+            print(f"{player.name} {player.team} {player.goals} + {player.assists} = {player.goals + player.assists}")
 
 if __name__ == "__main__":
     main()
