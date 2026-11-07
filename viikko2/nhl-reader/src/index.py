@@ -13,8 +13,7 @@ def main():
     console = Console()
     season = Prompt.ask("Season", choices=SEASONS, default="2024-25")
     url = f"https://studies.cs.helsinki.fi/nhlstats/{season}/players"
-    reader = PlayerReader(url)
-    stats = PlayerStats(reader)
+    stats = PlayerStats(PlayerReader(url))
 
     while True:
         nationality = Prompt.ask("Nationality", choices=stats.nationalities(), default="")
@@ -40,9 +39,9 @@ def players_table(players, title):
 
     return table
 
-class PlayerReader():
+class PlayerReader:  # pylint: disable=too-few-public-methods
     def __init__(self, url):
-        self.response = requests.get(url).json()
+        self.response = requests.get(url, timeout=10).json()
 
     def get_players(self):
         players = []
@@ -54,7 +53,7 @@ class PlayerReader():
         return players
 
 class PlayerStats:
-    def __init__(self, reader): 
+    def __init__(self, reader):
         self.players = reader.get_players()
 
     def top_scorers_by_nationality(self, nationality):
@@ -62,7 +61,7 @@ class PlayerStats:
 
         for player in self.players:
             if player.nationality == nationality:
-               top_nat_players.append(player)
+                top_nat_players.append(player)
 
         top_nat_players.sort(key=lambda player: player.points, reverse=True)
 
@@ -73,4 +72,3 @@ class PlayerStats:
 
 if __name__ == "__main__":
     main()
-    
