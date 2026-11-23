@@ -23,3 +23,10 @@ class TestKassapaate(unittest.TestCase):
         self.kassa.osta_lounas(maksukortti_mock)
 
         maksukortti_mock.osta.assert_not_called()
+
+    def test_kortille_lataamine_lisaa_kortille_maaran(self):
+        maksukortti_mock = Mock()
+
+        self.kassa.lataa(maksukortti_mock, 10)
+
+        maksukortti_mock.lataa.assert_called_with(10)
